@@ -68,7 +68,9 @@ void escutaTecla(unsigned char tecla, GLint x, GLint y){
             escala += 0.5;
             break;
         case '-':
-            escala -= 0.5;
+            if(escala > 0.5){
+                escala -= 0.5;
+            }
             break;
         case 'a':
             translacaoHorizontal--;
