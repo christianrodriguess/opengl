@@ -1,7 +1,10 @@
 #include <GL/freeglut.h>
 
 void desenha(void);
-void escutaTecla(unsigned char tecla, GLint x, GLint y);
+void teclado(unsigned char tecla, GLint x, GLint y);
+void mouse(int button, int state, int mousex, int mousey);
+void verificaClique(int x, int y);
+void desenhaBotoes();
 void desenhaLetraC(float x, float y);
 void desenhaLetraH(float x, float y);
 void desenhaLetraR(float x, float y);
@@ -11,10 +14,12 @@ void desenhaLetraT(float x, float y);
 void desenhaLetraA(float x, float y);
 void desenhaLetraN(float x, float y);
 
-GLfloat escala = 1;
+GLfloat escala = 10;
 GLfloat translacaoHorizontal = 0;
 GLfloat translacaoVertical = 0;
 GLfloat rotacao = 0;
+
+int trocaCorX = 0, trocaCorY = 0, trocaCorZ = 0;
 
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
@@ -23,7 +28,8 @@ int main(int argc, char** argv) {
     glutInitWindowPosition(0, 0);
     glutCreateWindow("Minha Janela OpenGL");
 
-    glutKeyboardFunc(escutaTecla);
+    glutKeyboardFunc(teclado);
+    glutMouseFunc(mouse);
     glutDisplayFunc(desenha);
 
     glClearColor(0, 0, 1, 0);
@@ -38,16 +44,20 @@ void desenha(void) {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     
-    gluOrtho2D(0, 32, 0, 32);
+    gluOrtho2D(0, 640, 0, 480);
 
-    glScalef(escala, escala, 0);
-
-    glTranslatef(translacaoHorizontal, translacaoVertical, 0);
-
-    glRotatef(rotacao, 0, 0, 1);
+    desenhaBotoes();
     
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    
+    glPushMatrix();
+
+    glScalef(escala, escala, 0);
+    glTranslatef(translacaoHorizontal, translacaoVertical, 0);
+    glRotatef(rotacao, 0, 0, 1);
+
+    glColor3f(1, 1, 1);
 
     desenhaLetraC(1, 1);
     desenhaLetraH(5, 1);
@@ -59,10 +69,12 @@ void desenha(void) {
     desenhaLetraA(25, 1);
     desenhaLetraN(29, 1);
 
+    glPopMatrix();
+
     glFlush();  
 }
 
-void escutaTecla(unsigned char tecla, GLint x, GLint y){
+void teclado(unsigned char tecla, GLint x, GLint y){
     switch (tecla){
         case '+':
             escala += 0.5;
@@ -93,7 +105,111 @@ void escutaTecla(unsigned char tecla, GLint x, GLint y){
         default:
             break;
     }
-    desenha();
+    glutPostRedisplay();
+}
+
+void mouse(int button, int state, int mousex, int mousey){
+    if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN){
+        int x = mousex;
+        int y = 480 - mousey;
+
+        verificaClique(x, y);
+    }
+    glutPostRedisplay();
+}
+
+void verificaClique(int x, int y){
+    // Botao X
+    if((x >= 50 && x <= 150) && 
+        (y >= 400 && y <= 450)){
+        trocaCorX = !trocaCorX;
+    }
+
+    // Botao Y
+    if((x >= 270 && x <= 370) && 
+        (y >= 400 && y <= 450)){
+        trocaCorY = !trocaCorY;
+    }
+
+    // Botao Z
+    if((x >= 490 && x <= 590) && 
+        (y >= 400 && y <= 450)){
+        trocaCorZ = !trocaCorZ;
+    }
+}
+
+void desenhaBotoes(){
+    if(trocaCorX){
+        glColor3f(1, 0, 0);
+    }
+    else {
+        glColor3f(1, 1, 1);
+    }
+    
+    // Botao X
+    glBegin(GL_QUADS);
+        glVertex2f(50, 400);
+        glVertex2f(50, 450);
+        glVertex2f(150, 450);
+        glVertex2f(150, 400);
+    glEnd();
+
+    if(trocaCorY){
+        glColor3f(0, 1, 0);
+    }
+    else {
+        glColor3f(1, 1, 1);
+    }
+
+    // Botao Y
+    glBegin(GL_QUADS);
+        glVertex2f(270, 400);
+        glVertex2f(270, 450);
+        glVertex2f(370, 450);
+        glVertex2f(370, 400);
+    glEnd();
+
+    if(trocaCorZ){
+        glColor3f(1, 0, 1);
+    }
+    else {
+        glColor3f(1, 1, 1);
+    }
+
+    // Botao Z
+    glBegin(GL_QUADS);
+        glVertex2f(490, 400);
+        glVertex2f(490, 450);
+        glVertex2f(590, 450);
+        glVertex2f(590, 400);
+    glEnd();
+
+    glColor3f(0, 0, 0);
+
+    // rotulo X
+    glBegin(GL_LINES);
+        glVertex2f(90, 415);
+        glVertex2f(110, 435);
+        glVertex2f(110, 415);
+        glVertex2f(90, 435);
+    glEnd();
+
+    // rotulo Y
+    glBegin(GL_LINE_STRIP);
+        glVertex2f(320, 415);
+        glVertex2f(320, 425);
+        glVertex2f(330, 435);
+        glVertex2f(320, 425);
+        glVertex2f(310, 435);
+    glEnd();
+
+    // rotulo Z
+    glBegin(GL_LINE_STRIP);
+        glVertex2f(530, 435);
+        glVertex2f(550, 435);
+        glVertex2f(530, 415);
+        glVertex2f(550, 415);
+    glEnd();
 }
 
 void desenhaLetraC(float x, float y){
