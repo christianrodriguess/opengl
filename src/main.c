@@ -19,7 +19,7 @@ GLfloat translacaoHorizontal = 0;
 GLfloat translacaoVertical = 0;
 GLfloat rotacao = 0;
 
-int trocaCorX = 0, trocaCorY = 0, trocaCorZ = 0;
+int xPressionado = 1, yPressionado = 0, zPressionado = 0;
 
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
@@ -55,7 +55,7 @@ void desenha(void) {
 
     glScalef(escala, escala, 0);
     glTranslatef(translacaoHorizontal, translacaoVertical, 0);
-    glRotatef(rotacao, 0, 0, 1);
+    glRotatef(rotacao, xPressionado, yPressionado, zPressionado);
 
     glColor3f(1, 1, 1);
 
@@ -80,7 +80,7 @@ void teclado(unsigned char tecla, GLint x, GLint y){
             escala += 0.5;
             break;
         case '-':
-            if(escala > 0.5){
+            if(escala > 2){
                 escala -= 0.5;
             }
             break;
@@ -120,26 +120,29 @@ void mouse(int button, int state, int mousex, int mousey){
 
 void verificaClique(int x, int y){
     // Botao X
-    if((x >= 50 && x <= 150) && 
-        (y >= 400 && y <= 450)){
-        trocaCorX = !trocaCorX;
+    if((x >= 50 && x <= 150) && (y >= 400 && y <= 450) &&
+        (!yPressionado && !zPressionado)){
+        xPressionado = !xPressionado;
+        rotacao = 0;
     }
 
     // Botao Y
-    if((x >= 270 && x <= 370) && 
-        (y >= 400 && y <= 450)){
-        trocaCorY = !trocaCorY;
+    if((x >= 270 && x <= 370) && (y >= 400 && y <= 450) && 
+        (!xPressionado && !zPressionado)){
+        yPressionado = !yPressionado;
+        rotacao = 0;
     }
 
     // Botao Z
-    if((x >= 490 && x <= 590) && 
-        (y >= 400 && y <= 450)){
-        trocaCorZ = !trocaCorZ;
+    if((x >= 490 && x <= 590) && (y >= 400 && y <= 450) && 
+        (!xPressionado && !yPressionado)){
+        zPressionado = !zPressionado;
+        rotacao = 0;
     }
 }
 
 void desenhaBotoes(){
-    if(trocaCorX){
+    if(xPressionado){
         glColor3f(1, 0, 0);
     }
     else {
@@ -154,7 +157,7 @@ void desenhaBotoes(){
         glVertex2f(150, 400);
     glEnd();
 
-    if(trocaCorY){
+    if(yPressionado){
         glColor3f(0, 1, 0);
     }
     else {
@@ -169,7 +172,7 @@ void desenhaBotoes(){
         glVertex2f(370, 400);
     glEnd();
 
-    if(trocaCorZ){
+    if(zPressionado){
         glColor3f(1, 0, 1);
     }
     else {
@@ -186,7 +189,7 @@ void desenhaBotoes(){
 
     glColor3f(0, 0, 0);
 
-    // rotulo X
+    // Rotulo X
     glBegin(GL_LINES);
         glVertex2f(90, 415);
         glVertex2f(110, 435);
@@ -194,7 +197,7 @@ void desenhaBotoes(){
         glVertex2f(90, 435);
     glEnd();
 
-    // rotulo Y
+    // Rotulo Y
     glBegin(GL_LINE_STRIP);
         glVertex2f(320, 415);
         glVertex2f(320, 425);
@@ -203,7 +206,7 @@ void desenhaBotoes(){
         glVertex2f(310, 435);
     glEnd();
 
-    // rotulo Z
+    // Rotulo Z
     glBegin(GL_LINE_STRIP);
         glVertex2f(530, 435);
         glVertex2f(550, 435);
