@@ -120,23 +120,26 @@ void mouse(int button, int state, int mousex, int mousey){
 
 void verificaClique(int x, int y){
     // Botao X
-    if((x >= 50 && x <= 150) && (y >= 400 && y <= 450) &&
-        (!yPressionado && !zPressionado)){
-        xPressionado = !xPressionado;
+    if((x >= 50 && x <= 150) && (y >= 400 && y <= 450) && !xPressionado){
+        xPressionado = 1;
+        yPressionado = 0;
+        zPressionado = 0;
         rotacao = 0;
     }
 
     // Botao Y
-    if((x >= 270 && x <= 370) && (y >= 400 && y <= 450) && 
-        (!xPressionado && !zPressionado)){
-        yPressionado = !yPressionado;
+    if((x >= 270 && x <= 370) && (y >= 400 && y <= 450) && !yPressionado){
+        yPressionado = 1;
+        xPressionado = 0;
+        zPressionado = 0;
         rotacao = 0;
     }
 
     // Botao Z
-    if((x >= 490 && x <= 590) && (y >= 400 && y <= 450) && 
-        (!xPressionado && !yPressionado)){
-        zPressionado = !zPressionado;
+    if((x >= 490 && x <= 590) && (y >= 400 && y <= 450) && !zPressionado){
+        zPressionado = 1;
+        xPressionado = 0;
+        yPressionado = 0;
         rotacao = 0;
     }
 }
